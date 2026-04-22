@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+# Пустой артефакт в prisma/ не коммитим; основная БД — dev.db в корне (может быть в репозитории)
+/prisma/dev.db
