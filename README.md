@@ -1,5 +1,7 @@
 ## PUBG Buff Lite
 
+![Главная страница PUBG Buff Lite](docs/readme-preview.png)
+
 Личный мини-сайт для анализа собственных матчей PUBG (и матчей друзей) через официальный PUBG API.
 
 ### Что уже есть в MVP
