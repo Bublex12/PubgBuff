@@ -1,0 +1,19 @@
+node_modules
+.next
+# Снимок из репозитория не кладём в образ — в проде своя БД (том / volume)
+dev.db
+.git
+.github
+.cursor
+*.md
+!DEPLOY.md
+.env
+.env.*
+!.env.example
+npm-debug.log*
+dev.db
+prisma/dev.db
+**/dev.db
+.DS_Store
+coverage
+*.tsbuildinfo
