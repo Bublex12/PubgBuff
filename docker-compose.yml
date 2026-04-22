@@ -1,0 +1,19 @@
+# Пример: приложение + постоянный том для SQLite.
+# Скопируйте .env.example → .env и задайте PUBG_API_KEY и при необходимости DATABASE_URL.
+
+services:
+  web:
+    build: .
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    environment:
+      # Абсолютный путь внутри контейнера; том сохраняет БД между перезапусками
+      DATABASE_URL: "${DATABASE_URL:-file:/data/pubgbuff.db}"
+    volumes:
+      - pubgbuff-sqlite:/data
+    restart: unless-stopped
+
+volumes:
+  pubgbuff-sqlite:

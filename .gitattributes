@@ -1,0 +1,2 @@
+# Скрипты для Linux-образов — только LF
+docker/entrypoint.sh text eol=lf

@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model PlayerCache {
+  id          String   @id @default(cuid())
+  platform    String
+  playerName  String
+  playerId    String
+  payload     Json
+  fetchedAt   DateTime
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([platform, playerName])
+}
+
+model MatchCache {
+  id         String   @id @default(cuid())
+  platform   String
+  matchId    String
+  payload    Json
+  fetchedAt  DateTime
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([platform, matchId])
+}
+
+model TelemetryCache {
+  id            String   @id @default(cuid())
+  platform      String
+  matchId       String
+  telemetryUrl  String
+  status        String
+  errorMessage  String?
+  eventCount    Int?
+  fetchedAt     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([platform, matchId])
+}
+
+model SpotlightEntry {
+  id           String   @id @default(cuid())
+  role         String
+  value        String
+  normalized   String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([role, normalized])
+}
+
+model PlayerProfileMark {
+  id             String   @id @default(cuid())
+  platform       String   @default("steam")
+  playerName     String
+  isStreamer     Boolean  @default(false)
+  isPro          Boolean  @default(false)
+  /** Синхронизируется с ответом /leaderboards (топ-500 для пары сезон+режим). */
+  isTop500       Boolean  @default(false)
+  top500Rank     Int?
+  top500SeasonId String?
+  top500GameMode String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([platform, playerName])
+}

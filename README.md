@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## PUBG Buff Lite
+
+Личный мини-сайт для анализа собственных матчей PUBG (и матчей друзей) через официальный PUBG API.
+
+### Что уже есть в MVP
+
+- Профиль игрока: матчи, победы, top-10, KD, winrate, средний урон.
+- Последние матчи: таблица с режимом, картой, местом, K/A, уроном.
+- Аналитика по картам: средние киллы/урон и winrate.
+- Совместка с друзьями: сколько игр вместе и общий winrate.
+- Weapon mastery: top оружие по XP.
+- TTL-кэш (SQLite + Prisma) и ручной refresh из API.
 
 ## Getting Started
 
-First, run the development server:
+1) Установи зависимости и миграции:
+
+```bash
+npm install
+npx prisma migrate dev --name init_cache
+```
+
+2) Настрой переменные окружения в `.env.local`:
+
+```bash
+PUBG_API_KEY="your_token_here"
+PUBG_DEFAULT_PLATFORM="steam"
+PUBG_CACHE_TTL_MINUTES="30"
+PUBG_FRIENDS="friend1,friend2"
+```
+
+3) Запусти dev сервер:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Открой [http://localhost:3000](http://localhost:3000), введи ник и получи дашборд.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Если «не находит» игрока
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Проверь `PUBG_API_KEY` (ошибка `401/403` почти всегда из‑за ключа).
+- Этот проект сейчас настроен только на **Steam shard** (`steam`). Если аккаунт не Steam‑PC, поиск по нику через этот shard не сработает.
+- Ник должен совпадать с тем, который видит PUBG API (иногда отличается от отображаемого ника в клиенте).
 
-## Learn More
+### API маршруты
 
-To learn more about Next.js, take a look at the following resources:
+- `GET /api/player/[name]?refresh=1` — агрегированный дашборд игрока (shard фиксирован: `steam`).
+- `GET /api/matches/[matchId]` — детали одного матча (shard фиксирован: `steam`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`refresh=1` принудительно обновляет кэш из PUBG API.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Стек
 
-## Deploy on Vercel
+- Next.js (App Router)
+- Prisma + SQLite
+- PUBG API (`players`, `matches`, `weapon_mastery`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Ограничения
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Приложение ориентировано на opt-in сценарий (свои ники и ники друзей), не на массовый сбор данных.
+- Телеметрия в MVP пока не подтянута в UI, но архитектура кэша и API-слоя готова для расширения.
